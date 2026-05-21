@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Mikii</title>
+<link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600;700&family=Poppins:wght@300;400;600&family=Great+Vibes&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --pink-1:#ffe3ec;
+    --pink-2:#ffb6c8;
+    --pink-3:#ff6f91;
+    --pink-4:#d63384;
+    --cream:#fff5f7;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{overflow-x:hidden}
+  body{
+    font-family:'Poppins',sans-serif;
+    background:linear-gradient(135deg,#ffd1dc 0%,#ffe3ec 40%,#ffc0cb 100%);
+    color:#4a1f33;
+    min-height:100vh;
+    position:relative;
+  }
+
+  /* floating hearts background */
+  .hearts-bg{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden}
+  .hearts-bg span{
+    position:absolute;bottom:-50px;color:#ff6f91;opacity:.55;
+    animation:rise linear infinite;
+    font-size:22px;
+    filter:drop-shadow(0 2px 4px rgba(214,51,132,.3));
+  }
+  @keyframes rise{
+    0%{transform:translateY(0) rotate(0deg);opacity:0}
+    10%{opacity:.7}
+    100%{transform:translateY(-110vh) rotate(360deg);opacity:0}
+  }
+
+  .container{position:relative;z-index:1;max-width:980px;margin:0 auto;padding:40px 22px 80px}
+
+  header{text-align:center;padding:30px 10px 10px}
+  .tag{display:inline-block;background:#fff;color:var(--pink-4);padding:6px 16px;border-radius:30px;font-size:13px;letter-spacing:2px;box-shadow:0 6px 18px rgba(214,51,132,.18)}
+  h1{
+    font-family:'Great Vibes',cursive;
+    font-size:clamp(48px,9vw,96px);
+    color:var(--pink-4);
+    line-height:1;
+    margin:14px 0 6px;
+    text-shadow:0 4px 14px rgba(214,51,132,.25);
+  }
+  .sub{font-family:'Dancing Script',cursive;font-size:clamp(22px,3.5vw,32px);color:#a83263}
+  .fullname{font-size:14px;letter-spacing:3px;color:#7a3553;margin-top:6px;text-transform:uppercase}
+
+  /* big heart with countdown */
+  .heart-wrap{display:flex;justify-content:center;margin:40px 0 10px;position:relative}
+  .heart{
+    width:min(380px,82vw);
+    aspect-ratio:1/1;
+    position:relative;
+    filter:drop-shadow(0 18px 30px rgba(214,51,132,.35));
+    animation:beat 1.6s ease-in-out infinite;
+  }
+  @keyframes beat{
+    0%,100%{transform:scale(1)}
+    25%{transform:scale(1.05)}
+    50%{transform:scale(.97)}
+    75%{transform:scale(1.04)}
+  }
+  .heart::before,.heart::after{
+    content:"";position:absolute;top:0;left:50%;
+    width:50%;height:80%;
+    background:linear-gradient(160deg,#ff8fab,#ff4f81 60%,#d63384);
+    border-radius:50% 50% 0 0;
+    transform:translateX(-100%) rotate(-45deg);
+    transform-origin:100% 100%;
+  }
+  .heart::after{transform:translateX(0) rotate(45deg);transform-origin:0 100%}
+  .heart .label{
+    position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;
+    color:#fff;text-align:center;z-index:2;padding-top:18%;
+    text-shadow:0 3px 10px rgba(0,0,0,.25);
+  }
+  .days{font-family:'Dancing Script',cursive;font-size:clamp(80px,16vw,150px);line-height:.9}
+  .label .text{font-size:clamp(14px,2.2vw,18px);letter-spacing:3px;margin-top:6px}
+
+  /* countdown grid */
+  .countdown{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:30px auto;max-width:560px}
+  .cd-box{background:rgba(255,255,255,.7);backdrop-filter:blur(8px);border-radius:18px;padding:14px 8px;text-align:center;box-shadow:0 8px 22px rgba(214,51,132,.18);border:1px solid rgba(255,255,255,.6)}
+  .cd-box .n{font-family:'Dancing Script',cursive;font-size:34px;color:var(--pink-4);line-height:1}
+  .cd-box .u{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:#7a3553;margin-top:2px}
+
+  /* section card */
+  .card{
+    background:rgba(255,255,255,.85);
+    backdrop-filter:blur(10px);
+    border-radius:26px;
+    padding:34px 28px;
+    margin:30px 0;
+    box-shadow:0 14px 40px rgba(214,51,132,.18);
+    border:1px solid rgba(255,255,255,.7);
+    position:relative;
+    overflow:hidden;
+  }
+  .card::before{
+    content:"♥";position:absolute;top:-20px;right:-10px;font-size:120px;color:#ffd1dc;opacity:.55;transform:rotate(15deg);pointer-events:none
+  }
+  .card h2{
+    font-family:'Great Vibes',cursive;
+    font-size:clamp(34px,5vw,46px);
+    color:var(--pink-4);
+    margin-bottom:14px;
+    text-align:center;
+  }
+  .card .divider{
+    display:flex;align-items:center;justify-content:center;gap:10px;color:var(--pink-3);margin-bottom:18px;font-size:12px;letter-spacing:3px
+  }
+  .card .divider::before,.card .divider::after{content:"";height:1px;background:var(--pink-2);width:60px}
+
+  .verse{
+    text-align:center;font-style:italic;font-size:18px;line-height:1.7;color:#6b2d49;
+    background:linear-gradient(180deg,#fff5f7,#ffe9ef);
+    border-radius:18px;padding:22px;border:1px dashed #ff95b3;
+  }
+  .verse .ref{display:block;margin-top:10px;font-style:normal;font-weight:600;color:var(--pink-4);letter-spacing:1px}
+
+  /* letter — paper feel */
+  .letter{
+    background:
+      repeating-linear-gradient(transparent,transparent 30px,rgba(255,182,200,.25) 30px,rgba(255,182,200,.25) 31px),
+      linear-gradient(180deg,#fffaf6,#fff0f3);
+    border:1px solid #f5c2cf;
+    box-shadow:0 18px 50px rgba(214,51,132,.22), inset 0 0 60px rgba(255,200,215,.4);
+    padding:30px 20px;
+    position:relative;
+  }
+  .letter::after{
+    content:"♥";position:absolute;bottom:18px;left:24px;color:#ffb6c8;font-size:22px;opacity:.7
+  }
+  .letter h2{color:#b8276b}
+  .letter p{margin-bottom:14px;line-height:1.85;font-size:15px;color:#3a1828;font-family:'Poppins',sans-serif}
+  .letter .greet{font-family:'Dancing Script',cursive;font-size:30px;color:var(--pink-4);margin-bottom:14px}
+  .letter .sign{font-family:'Great Vibes',cursive;font-size:42px;color:var(--pink-4);text-align:right;margin-top:22px;line-height:1}
+  .letter .sign-small{text-align:right;font-size:12px;letter-spacing:3px;color:#7a3553;margin-top:4px;text-transform:uppercase}
+  .letter .date-line{text-align:right;font-size:13px;color:#a83263;font-style:italic;margin-bottom:18px}
+
+  /* photo gallery placeholders */
+  .gallery{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px;margin-top:18px}
+  .photo{
+    aspect-ratio:1/1;border-radius:18px;
+    background:linear-gradient(135deg,#ffe3ec,#ffb6c8);
+    display:flex;align-items:center;justify-content:center;
+    color:#a83263;font-size:13px;text-align:center;padding:10px;
+    border:2px dashed #ff95b3;
+    transition:transform .3s ease;
+    overflow:hidden;
+    position:relative;
+  }
+  .photo:hover{transform:translateY(-4px) scale(1.02)}
+  .photo img{width:100%;height:100%;object-fit:cover;border-radius:16px;display:block}
+  .photo .caption{position:absolute;bottom:8px;left:8px;right:8px;background:rgba(255,255,255,.85);padding:4px 8px;border-radius:10px;font-size:11px;color:var(--pink-4)}
+
+  /* flower button */
+  .bouquet-btn{
+    background:linear-gradient(135deg,#ff6f91,#d63384);
+    color:#fff;border:none;padding:14px 32px;border-radius:40px;
+    font-family:'Poppins',sans-serif;font-size:15px;letter-spacing:2px;
+    cursor:pointer;box-shadow:0 10px 26px rgba(214,51,132,.4);
+    transition:transform .25s ease, box-shadow .25s ease;
+  }
+  .bouquet-btn:hover{transform:translateY(-3px) scale(1.04);box-shadow:0 14px 32px rgba(214,51,132,.55)}
+  .bouquet-btn:active{transform:scale(.98)}
+
+  /* flower of photos — rose shape, fully responsive */
+  .bouquet-card{text-align:center;overflow:visible!important;padding:24px 10px!important}
+  .flower-arrangement{
+    position:relative;
+    margin:10px auto 6px;
+    width:min(280px,75vw);
+    aspect-ratio:1/1;
+  }
+  /* center photo — % based */
+  .flower-center{
+    position:absolute;width:18.5%;height:18.5%;border-radius:50%;
+    overflow:hidden;border:3px solid #fff;
+    box-shadow:0 3px 14px rgba(214,51,132,.5), 0 0 0 3px rgba(255,111,145,.25);
+    background:linear-gradient(135deg,#ffe3ec,#ffb6c8);
+    z-index:10;cursor:pointer;
+    left:50%;top:50%;transform:translate(-50%,-50%);
+    animation:centerPulse 3s ease-in-out infinite;
+  }
+  .flower-center img{width:100%;height:100%;object-fit:cover;display:block}
+  @keyframes centerPulse{
+    0%,100%{transform:translate(-50%,-50%) scale(1)}
+    50%{transform:translate(-50%,-50%) scale(1.06)}
+  }
+  /* petal photos — % based */
+  .flower-petal{
+    position:absolute;border-radius:50%;
+    overflow:hidden;border:2px solid rgba(255,255,255,.9);
+    box-shadow:0 2px 8px rgba(214,51,132,.25);
+    background:linear-gradient(135deg,#ffe3ec,#ffb6c8);
+    transition:transform .3s ease, box-shadow .3s ease;
+    cursor:pointer;
+  }
+  .flower-petal img{width:100%;height:100%;object-fit:cover;display:block}
+  .flower-petal:hover{z-index:20!important;box-shadow:0 6px 20px rgba(214,51,132,.5);transform:translate(-50%,-50%) scale(1.25)!important}
+  /* ring sizes as % of container */
+  .flower-petal.ring1{width:16.5%;height:16.5%;z-index:8}
+  .flower-petal.ring2{width:14.3%;height:14.3%;z-index:6}
+  .flower-petal.ring3{width:12.1%;height:12.1%;z-index:4}
+  /* stem */
+  .flower-stem-wrap{
+    display:flex;flex-direction:column;align-items:center;margin-top:-2px;
+  }
+  .flower-stem{
+    width:5px;height:50px;
+    background:linear-gradient(180deg,#7bb37a,#4a7a4a);
+    border-radius:3px;
+    box-shadow:1px 0 3px rgba(0,0,0,.08);
+  }
+  .flower-leaves{
+    position:relative;width:44px;height:18px;margin-top:-22px;
+  }
+  .flower-leaf{
+    position:absolute;width:22px;height:11px;
+    border-radius:50% 50% 50% 0;
+    background:linear-gradient(135deg,#8bc68b,#5a9a5a);
+  }
+  .flower-leaf.left{left:0;transform:rotate(-35deg)}
+  .flower-leaf.right{right:0;transform:rotate(35deg);border-radius:50% 50% 0 50%}
+
+  /* desktop boost */
+  @media (min-width:481px){
+    .flower-arrangement{width:min(420px,45vw)}
+    .flower-center{border-width:4px}
+    .flower-petal.ring1{border-width:3px}
+    .flower-petal.ring2{border-width:3px}
+    .flower-stem{width:7px;height:70px}
+    .bouquet-card{padding:34px 20px!important}
+  }
+
+  /* locked teaser before birthday */
+  .locked-teaser{text-align:center}
+  .locked-teaser .lock-icon{font-size:64px;margin:10px 0;filter:drop-shadow(0 6px 14px rgba(214,51,132,.3));animation:beat 1.6s ease-in-out infinite}
+  .locked-teaser .lock-text{font-size:15px;color:#6b2d49;line-height:1.7;margin-top:6px}
+  .locked-teaser .lock-sub{font-family:'Dancing Script',cursive;font-size:24px;color:var(--pink-4);margin-top:14px}
+
+  .bouquet-caption{text-align:center;font-family:'Dancing Script',cursive;font-size:20px;color:var(--pink-4);margin-top:10px}
+  .bouquet-hint{text-align:center;font-size:11px;color:#a83263;margin-top:3px;letter-spacing:1px;font-style:italic}
+
+  /* lightbox */
+  .lightbox{position:fixed;inset:0;background:rgba(40,10,25,.85);display:none;align-items:center;justify-content:center;z-index:9999;padding:20px;cursor:zoom-out}
+  .lightbox.open{display:flex;animation:lbFade .25s ease}
+  .lightbox img{max-width:92vw;max-height:88vh;border-radius:16px;border:5px solid #fff;box-shadow:0 20px 60px rgba(0,0,0,.5)}
+  @keyframes lbFade{from{opacity:0}to{opacity:1}}
+
+  /* hidden until birthday */
+  .reveal-hidden{display:none}
+  .reveal-show{display:block;animation:revealIn 1.2s ease-out}
+  @keyframes revealIn{
+    0%{opacity:0;transform:translateY(20px)}
+    100%{opacity:1;transform:translateY(0)}
+  }
+
+  footer{text-align:center;margin-top:40px;color:#7a3553;font-size:13px}
+  footer .heart-mini{color:var(--pink-4)}
+
+  @media (max-width:480px){
+    .countdown{grid-template-columns:repeat(4,1fr); gap:6px; margin:20px auto;}
+    .cd-box{padding:10px 2px; border-radius:14px;}
+    .cd-box .n{font-size:24px;}
+    .cd-box .u{font-size:8px; letter-spacing:1px;}
+    .card{padding:22px 14px}
+    .letter{padding:24px 16px}
+    .letter .sign{font-size:34px}
+    .container{padding:20px 12px 60px}
+    .bouquet-btn{padding:12px 24px;font-size:13px;letter-spacing:1px}
+  }
+</style>
+</head>
+<body>
+
+<div class="hearts-bg" id="heartsBg"></div>
+
+<div class="container">
+
+  <header>
+    <span class="tag" id="headerTag">BIRTHDAY COUNTDOWN</span>
+    <h1 id="headerTitle">Counting Down For Miki</h1>
+    <div class="fullname">Keziah Cortes Labos</div>
+  </header>
+
+  <div class="heart-wrap" id="heartWrap">
+    <div class="heart">
+      <div class="label">
+        <div class="days" id="daysLeft">17</div>
+        <div class="text">DAYS LEFT</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="countdown" id="countdownBoxes">
+    <div class="cd-box"><div class="n" id="d">17</div><div class="u">Days</div></div>
+    <div class="cd-box"><div class="n" id="h">00</div><div class="u">Hours</div></div>
+    <div class="cd-box"><div class="n" id="m">00</div><div class="u">Minutes</div></div>
+    <div class="cd-box"><div class="n" id="s">00</div><div class="u">Seconds</div></div>
+  </div>
+
+  <!-- LOCKED TEASER (shows before birthday) -->
+  <div class="card locked-teaser" id="lockedTeaser">
+    <h2>A Surprise For You ♥</h2>
+    <div class="divider">♥ WAIT INSIDE ♥</div>
+    <p class="lock-text">
+      Something is waiting for you here.<br/>
+      It will only unlock on your birthday ♥
+    </p>
+
+  </div>
+
+  <!-- HIDDEN UNTIL BIRTHDAY -->
+  <div id="birthdayReveal" class="reveal-hidden">
+
+  <!-- BIBLE VERSE -->
+  <div class="card" id="verseCard">
+    <h2>A Bible Verse For You</h2>
+    <div class="divider">♥ BIRTHDAY BLESSING ♥</div>
+    <div class="verse">
+      "For I know the thoughts that I think toward you, saith the Lord,
+      thoughts of peace, and not of evil, to give you an expected end.
+      Then shall ye call upon me, and ye shall go and pray unto me,
+      and I will hearken unto you."
+      <span class="ref">— Jeremiah 29:11-12 (KJV)</span>
+    </div>
+  </div>
+
+  <!-- LONG LETTER -->
+  <div class="card letter">
+    <h2>A Letter For You, Miki</h2>
+
+    <div class="date-line">on your special day ♥</div>
+
+    <p>
+      Hi Mikii, Happy Birthday! Wala ko kabalo asa ko magsugod, but today, on your special day, I want to share everything that's in my heart, kahit medyo corny pakinggan, I want you to know this.
+    </p>
+    
+    <p>
+      Looking back at 2023 in Cavite, that's where it all started. Sa una natong chat, grabe ang kaba ko. I would constantly re-read my messages just to make sure I was saying the right things. I never imagined that a simple "hi" would lead us to where we are now. Salamat kaayo, Miki. I am genuinely thankful that despite our busy schedules, we always find time to communicate and be there for each other.
+    </p>
+    
+    <p>
+      Even before we first spoke, gina-tan-aw na tika sa school from afar. It might sound a bit funny now, pero honest lang ko. There was just something about you that caught my attention no matter how crowded the place was. Wala pa ko kaila sa imo that time, but somehow, my heart already knew. Maybe that was the beginning of everything.
+    </p>
+    
+    <p>
+      Then came the day we finally met. Grabe ang kabog sa dughan ko, I was so nervous but incredibly happy. I tried my best to act normal, pero deep inside, kabado talaga ako. Every detail of that day, your smile, your voice, and the way you laugh, is saved in my memory forever.
+    </p>
+    
+    <p>
+      From Cavite 2023 hanggang karon, through every chat, every silence, and every reconnection, I am so grateful that we are still here. I am thankful na hindi tayo nilayo ng buhay sa isa't isa. For me, that alone is a beautiful blessing.
+    </p>
+    
+    <p>
+      Karon, sa imong birthday, here is my wish for you:
+    </p>
+    
+    <p>
+      <strong>Stay healthy</strong> sa katawan, sa pag-iisip, at sa puso. Please always take good care of yourself. You deserve to feel your best every single day.
+    </p>
+    
+    <p>
+      <strong>Padayun sa pag-alagad sa Ginoo.</strong> Never stop serving Him, Miki. He has wonderful plans for you. Your unwavering faith is truly one of the things I admire most about you. Keep that light burning brightly.
+    </p>
+    
+    <p>
+      May all your dreams, whether big or small, come true. Lahat ng hinahangad mo, sana ibigay sa imo ng Ginoo at His perfect time.
+    </p>
+    
+    <p>
+      And I hope, in my own simple way, I can continue to be part of your journey. Kahit sa simpleng kumustahan lang, that means the world to me.
+    </p>
+    
+    <p>
+      Thank you for existing, for the wonderful memories, and for staying in my life. Happy, happy birthday, Keziah Cortes Labos, my Miki. I love you. ♥
+    </p>
+
+    <div style="text-align:center;margin-top:30px">
+      <button id="bouquetBtn" class="bouquet-btn">🌸 Open Your Flower ♥</button>
+    </div>
+
+    <div class="sign">— Tsukii</div>
+    <div class="sign-small">always, with all my heart</div>
+  </div>
+
+  <!-- BOUQUET — revealed when button clicked -->
+  <div id="bouquetSection" class="reveal-hidden">
+  <div class="card bouquet-card">
+    <h2>A Flower For You</h2>
+    <div class="flower-arrangement" id="flowerArrangement">
+      <!-- flower built by JS from miki pictures/ folder -->
+    </div>
+    <div class="flower-stem-wrap">
+      <div class="flower-stem"></div>
+      <div class="flower-leaves">
+        <div class="flower-leaf left"></div>
+        <div class="flower-leaf right"></div>
+      </div>
+    </div>
+    <p class="bouquet-caption">For the most beautiful girl I know ♥</p>
+    <p class="bouquet-hint">tap any petal to see it bigger</p>
+  </div>
+
+  </div><!-- /#bouquetSection -->
+
+  </div><!-- /#birthdayReveal -->
+
+  <footer>
+    Made by Tsukii
+  </footer>
+</div>
+
+<div class="lightbox" id="lightbox"><img id="lightboxImg" src="" alt=""></div>
+
+<script>
+  // floating hearts
+  (function(){
+    const bg=document.getElementById('heartsBg');
+    const symbols=['♥','♡','❤'];
+    for(let i=0;i<35;i++){
+      const s=document.createElement('span');
+      s.textContent=symbols[Math.floor(Math.random()*symbols.length)];
+      s.style.left=Math.random()*100+'vw';
+      s.style.fontSize=(14+Math.random()*26)+'px';
+      s.style.animationDuration=(6+Math.random()*10)+'s';
+      s.style.animationDelay=(Math.random()*8)+'s';
+      s.style.opacity=(0.35+Math.random()*0.5);
+      bg.appendChild(s);
+    }
+  })();
+
+  // countdown target: June 7, 2026 (Month is 0-indexed: 5 = June)
+  const BIRTHDAY = new Date(2026, 5, 7, 0, 0, 0);
+
+  function pad(n){return n<10?'0'+n:n}
+  function tick(){
+    const now=new Date();
+    const diff=BIRTHDAY-now;
+    if(diff<=0){
+      document.getElementById('daysLeft').textContent='0';
+      document.getElementById('d').textContent='00';
+      document.getElementById('h').textContent='00';
+      document.getElementById('m').textContent='00';
+      document.getElementById('s').textContent='00';
+      document.querySelector('.heart .text').textContent="IT'S YOUR DAY ♥";
+      // hide countdown UI, reveal letter + photos + verse
+      const hideIds=['heartWrap','countdownBoxes','lockedTeaser','headerTag'];
+      hideIds.forEach(id=>{const el=document.getElementById(id);if(el) el.style.display='none'});
+      const title=document.getElementById('headerTitle');
+      if(title) title.textContent='Happy Birthday, Miki';
+      const reveal=document.getElementById('birthdayReveal');
+      if(reveal && !reveal.classList.contains('reveal-show')){
+        reveal.classList.remove('reveal-hidden');
+        reveal.classList.add('reveal-show');
+      }
+      return;
+    }
+    const days=Math.floor(diff/86400000);
+    const hours=Math.floor(diff%86400000/3600000);
+    const mins=Math.floor(diff%3600000/60000);
+    const secs=Math.floor(diff%60000/1000);
+    document.getElementById('daysLeft').textContent=days;
+    document.getElementById('d').textContent=pad(days);
+    document.getElementById('h').textContent=pad(hours);
+    document.getElementById('m').textContent=pad(mins);
+    document.getElementById('s').textContent=pad(secs);
+  }
+  tick();
+  setInterval(tick,1000);
+
+  // build the flower from miki pictures/
+  const MIKI_PICS=[
+    "506353606_691797567082502_5440937882940993205_n.jpg",
+    "571277068_804989515763306_2623093418720753912_n.jpg",
+    "572042530_804989349096656_3394815330738149517_n.jpg",
+    "572385782_804988925763365_7196527722015907860_n.jpg",
+    "572516708_804989895763268_8486820625801267917_n.jpg",
+    "592248077_835328916062699_7801985304250773295_n.jpg",
+    "592313647_833222269606697_1517656176455259931_n.jpg",
+    "594846788_837491755846415_4802172252175587444_n.jpg",
+    "600506807_849215074674083_5226193409273162339_n.jpg",
+    "601874262_849214161340841_7707435937760383202_n.jpg",
+    "604470855_849215834674007_6443087869275100048_n.jpg",
+    "605524881_849213528007571_6130635992404568702_n.jpg",
+    "605714554_849214354674155_3147666217796391757_n.jpg",
+    "605722099_856402800621977_2705657548224440156_n.jpg",
+    "606011161_856403663955224_7503553535570668866_n.jpg",
+    "607255628_857677083827882_5642994959888285011_n.jpg",
+    "611649066_861522693443321_2626579932295139528_n.jpg",
+    "612252897_861522910109966_7540302084565728207_n.jpg",
+    "613028558_861523016776622_6843230183777502781_n.jpg",
+    "642218495_902731025989154_169574210611885616_n.jpg",
+    "660127058_929229850005938_9028270163474308264_n.jpg",
+    "662096819_929972346598355_8100625546946441493_n.jpg",
+    "663330224_929972463265010_1126346524598033836_n.jpg",
+    "700944475_966709959591260_7950969166179585082_n.jpg",
+    "701495740_966711139591142_8979298075199608619_n.jpg",
+    "702265467_968173009444955_3839516550833951545_n.jpg",
+    "702752278_968171846111738_4893770342910047350_n.jpg"
+  ];
+
+  function buildFlower(){
+    const container=document.getElementById('flowerArrangement');
+    if(!container) return;
+    container.innerHTML='';
+    const total=MIKI_PICS.length;
+
+    // Rose layout using PERCENTAGES — auto-scales with any screen size
+    // 1 center + 5 ring1 + 8 ring2 + 13 ring3 = 27
+    const rings=[
+      {count:5, radiusPct:14, startAngle:-90, cls:'ring1'},
+      {count:8, radiusPct:26.5, startAngle:-54, cls:'ring2'},
+      {count:13, radiusPct:40, startAngle:-76, cls:'ring3'}
+    ];
+    let idx=0;
+
+    // center photo
+    const center=document.createElement('div');
+    center.className='flower-center';
+    const cImg=document.createElement('img');
+    cImg.src='miki pictures/'+MIKI_PICS[idx];
+    cImg.alt='memory '+(idx+1);
+    cImg.loading='lazy';
+    center.appendChild(cImg);
+    center.dataset.src=cImg.src;
+    container.appendChild(center);
+    idx++;
+
+    // build petal rings — all positions in %
+    rings.forEach(function(ring){
+      for(let i=0;i<ring.count;i++){
+        if(idx>=total) return;
+        const angle=ring.startAngle+(360/ring.count)*i;
+        const rad=angle*Math.PI/180;
+        const leftPct=50+Math.cos(rad)*ring.radiusPct;
+        const topPct=50+Math.sin(rad)*ring.radiusPct;
+        const petal=document.createElement('div');
+        petal.className='flower-petal '+ring.cls;
+        petal.style.left=leftPct+'%';
+        petal.style.top=topPct+'%';
+        petal.style.transform='translate(-50%,-50%)';
+        const img=document.createElement('img');
+        img.src='miki pictures/'+MIKI_PICS[idx];
+        img.alt='memory '+(idx+1);
+        img.loading='lazy';
+        petal.appendChild(img);
+        petal.dataset.src=img.src;
+        container.appendChild(petal);
+        idx++;
+      }
+    });
+  }
+  // don't build on load — section is hidden so offsetWidth = 0
+  // flower is built when button is clicked (see below)
+
+  // lightbox
+  const lb=document.getElementById('lightbox');
+  const lbImg=document.getElementById('lightboxImg');
+  document.addEventListener('click',function(e){
+    const f=e.target.closest('.flower-petal') || e.target.closest('.flower-center');
+    if(f){
+      lbImg.src=f.dataset.src;
+      lb.classList.add('open');
+      return;
+    }
+    if(e.target===lb || e.target===lbImg){
+      lb.classList.remove('open');
+    }
+  });
+
+  // bouquet button → reveal bouquet, then build flower
+  let flowerBuilt=false;
+  document.addEventListener('click',function(e){
+    if(e.target && e.target.id==='bouquetBtn'){
+      const sec=document.getElementById('bouquetSection');
+      if(sec){
+        sec.classList.remove('reveal-hidden');
+        sec.classList.add('reveal-show');
+        e.target.style.display='none';
+        // build flower AFTER section is visible so offsetWidth works
+        if(!flowerBuilt){
+          setTimeout(function(){
+            buildFlower();
+            flowerBuilt=true;
+            sec.scrollIntoView({behavior:'smooth',block:'start'});
+          },80);
+        } else {
+          setTimeout(()=>sec.scrollIntoView({behavior:'smooth',block:'start'}),100);
+        }
+      }
+    }
+  });
+</script>
+</body>
+</html>
